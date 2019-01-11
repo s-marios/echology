@@ -3,15 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package infopoller;
+package infopoller.dataconverter;
 
 /**
  *
  * @author haha
  */
-public class HumidityDataConverter extends DataConverterBase{
+public class DataConverterHumidity extends DataConverterBase{
 
-    public HumidityDataConverter() {
+    public DataConverterHumidity() {
         super((byte) 0xE0);
         
     }

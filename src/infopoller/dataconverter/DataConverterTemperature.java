@@ -3,15 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package infopoller;
+package infopoller.dataconverter;
 
 /**
  *
  * @author haha
  */
-public class TemperatureDataConverter extends DataConverterBase{
+public class DataConverterTemperature extends DataConverterBase{
 
-    public TemperatureDataConverter() {
+    public DataConverterTemperature() {
         super((byte) 0xE0);
     }
 

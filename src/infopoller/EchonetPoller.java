@@ -5,6 +5,7 @@
  */
 package infopoller;
 
+import infopoller.dataconverter.DataConverter;
 import jaist.echonet.EchonetNode;
 import jaist.echonet.RemoteEchonetObject;
 import java.net.InetAddress;

@@ -5,6 +5,10 @@
  */
 package infopoller;
 
+import infopoller.dataconverter.DataConverterHumidity;
+import infopoller.dataconverter.DataConverterTemperature;
+import infopoller.dataconverter.DataConverter;
+import infopoller.dataconverter.DataConverterCO2VOC;
 import jaist.echonet.EOJ;
 import java.util.EnumSet;
 import java.util.Map;
@@ -15,9 +19,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author haha
  */
 public enum ConverterType {
-    //TODO change the .class to just a new instance of the ctype to avoid exceptions
-    TEMP ("001100", "TEMP", new TemperatureDataConverter()),
-    HUMIDITY ("001200", "HMDT", new HumidityDataConverter());
+    TEMP ("001100", "TEMP", new DataConverterTemperature()),
+    HUMIDITY ("001200", "HMDT", new DataConverterHumidity()),
+    //evoc and co2 are doing the same thing, use the same converter.
+    EVOC ("001D00", "EVOC", new DataConverterCO2VOC()),
+    CO2 ("001B00", "CO2", new DataConverterCO2VOC());
             
     private final String eoj;
     private final String type;
