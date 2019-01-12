@@ -12,7 +12,7 @@ import jaist.echonet.RemoteEchonetObject;
  *
  * @author haha
  */
-public class PollingTarget {
+public class PollingTarget extends InformationTarget {
 
     /**
      * @return the converter
@@ -36,18 +36,4 @@ public class PollingTarget {
         this.converter = converter;
     }
 
-    public String formatData(byte[] data) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(robject.getQueryIp().toString().substring(1));
-        builder.append(":");
-        builder.append(robject.getEOJ().toString());
-        builder.append(":");
-        builder.append(String.format("0x%02X", converter.getEPC()));
-        builder.append(",");
-        builder.append(converter.getType());
-        builder.append(",");
-        builder.append(converter.doConversion(data));
-        builder.append("\n");
-        return builder.toString();
-    }
 }

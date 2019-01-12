@@ -9,11 +9,10 @@ package infopoller.dataconverter;
  *
  * @author haha
  */
-public class DataConverterHumidity extends DataConverterBase{
+public class DataConverterHumidity extends DataConverterBase {
 
     public DataConverterHumidity() {
-        super((byte) 0xE0);
-        
+        super("001200", (byte) 0xE0, "HMDT");
     }
 
     @Override
@@ -21,5 +20,5 @@ public class DataConverterHumidity extends DataConverterBase{
         Integer humidity = (int) data[0];
         return humidity.toString();
     }
-    
+
 }

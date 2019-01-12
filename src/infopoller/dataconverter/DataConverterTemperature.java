@@ -12,7 +12,7 @@ package infopoller.dataconverter;
 public class DataConverterTemperature extends DataConverterBase{
 
     public DataConverterTemperature() {
-        super((byte) 0xE0);
+        super("001100", (byte) 0xE0, "TMPR");
     }
 
     @Override

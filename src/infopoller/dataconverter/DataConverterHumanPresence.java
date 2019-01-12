@@ -9,16 +9,15 @@ package infopoller.dataconverter;
  *
  * @author haha
  */
-public class DataConverterCO2VOC extends DataConverterBase {
+public class DataConverterHumanPresence extends DataConverterBase{
 
-    public DataConverterCO2VOC() {
-        super((byte) 0xE0);
+    public DataConverterHumanPresence() {
+        super("000700", (byte) 0xB1, "PRSN");
     }
 
     @Override
     protected String convertData(byte[] data) {
-        Integer ppm = (((int) data[0] & 0x000000ff) << 8) | (int) data[1] & 0x000000ff;
-        return ppm.toString();
+        return data[0] == (byte) 0x41 ? "1" : "0";
     }
-
+    
 }

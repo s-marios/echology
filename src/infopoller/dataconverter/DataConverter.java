@@ -5,13 +5,30 @@
  */
 package infopoller.dataconverter;
 
+import jaist.echonet.EOJ;
+
 /**
- *
- * @author haha
+ * Converter class that that handles the conversion of binary ECHONET Lite data
+ * into strings, suitable for consumption by logstash.
+ * @author Marios Sioutis
  */
 public interface DataConverter {
-    void setType(String type);
+
+    /**
+     * Returns a string representation of the binary data that this converter 
+     * handles. 
+     * @param data
+     * @return
+     */
     String doConversion(byte[] data);
-    String getType();
+
+    /**
+     * Returns the type of information handled by this converter as a String.
+     * Examples: "HMDT", "TMPR", others.
+     *
+     * @return information type as a String.
+     */
+    String getInfoTypeString();
     byte getEPC();
+    EOJ getEOJ();
 }

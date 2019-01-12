@@ -5,27 +5,38 @@
  */
 package infopoller.dataconverter;
 
+import jaist.echonet.EOJ;
+
 /**
  *
  * @author haha
  */
 public abstract class DataConverterBase implements DataConverter {
 
+    /**
+     * A string representation of the type of information.
+     * Examples: "HMDT", "TMPR", "PRSN" others.
+     */
     protected String type;
+    /**
+     * The Property code associated with this converter
+     */
     protected byte EPC;
     
-    DataConverterBase(byte epc) {
+    /**
+     * The echonet object type associated with this converter
+     */
+    protected EOJ eoj;
+    
+    DataConverterBase(String eoj, byte epc, String infotype) {
         this.EPC = epc;
+        this.eoj = new EOJ(eoj);
+        this.type = infotype;
     }
     
     @Override
-    public String getType() {
+    public String getInfoTypeString() {
         return this.type;
-    }
-
-    @Override
-    public void setType(String type) {
-        this.type = type;
     }
 
     @Override
@@ -42,6 +53,11 @@ public abstract class DataConverterBase implements DataConverter {
     @Override
     public byte getEPC() {
         return EPC;
+    }
+    
+    @Override
+    public EOJ getEOJ() {
+        return eoj;
     }
 
 }

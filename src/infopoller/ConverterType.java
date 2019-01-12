@@ -5,12 +5,13 @@
  */
 package infopoller;
 
+import infopoller.dataconverter.DataConverter;
+import infopoller.dataconverter.DataConverterCO2;
+import infopoller.dataconverter.DataConverterHumanPresence;
 import infopoller.dataconverter.DataConverterHumidity;
 import infopoller.dataconverter.DataConverterTemperature;
-import infopoller.dataconverter.DataConverter;
-import infopoller.dataconverter.DataConverterCO2VOC;
+import infopoller.dataconverter.DataConverterVOC;
 import jaist.echonet.EOJ;
-import java.util.EnumSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -18,38 +19,58 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author haha
  */
-public enum ConverterType {
+public class ConverterType {
+    
+    //TODO change enum to... class again?
+    /*
     TEMP ("001100", "TEMP", new DataConverterTemperature()),
     HUMIDITY ("001200", "HMDT", new DataConverterHumidity()),
     //evoc and co2 are doing the same thing, use the same converter.
-    EVOC ("001D00", "EVOC", new DataConverterCO2VOC()),
-    CO2 ("001B00", "CO2", new DataConverterCO2VOC());
-            
-    private final String eoj;
-    private final String type;
-    private final DataConverter converter;
+    EVOC ("001D00", "EVOC", new DataConverterCO2()),
+    CO2 ("001B00", "CO2", new DataConverterCO2()),
+    TEST("000700", "PRSN", new DataConverterTemperature());
+    */        
+    
     /**
      * A map that holds EOJ.hashCode() <-> ctype mappings
      */
-    private static final Map<Integer, DataConverter> cmap;
+    private final Map<Integer, DataConverter> cmap;
+    private final Map<Integer, DataConverter> infomap;
     
+    private static final ConverterType singleton;
     //I always love seeing this...
     static {
+        singleton = new ConverterType();
+    }
+    
+    ConverterType(){
         cmap = new ConcurrentHashMap<>();
-        for (ConverterType ctype : EnumSet.allOf(ConverterType.class)){
-            cmap.put(new EOJ(ctype.eoj).hashCode(), ctype.converter);
-        }
+        addPolling(new DataConverterTemperature());
+        addPolling(new DataConverterHumidity());
+        addPolling(new DataConverterVOC());
+        addPolling(new DataConverterCO2());
+        
+        
+        infomap = new ConcurrentHashMap<>();
+        addNotification(new DataConverterHumanPresence());
     }
     
-    ConverterType(String eoj, String type, DataConverter converter){
-        this.eoj = eoj;
-        this.type = type;
-        this.converter = converter;
-        this.converter.setType(type);
+    private void addPolling(DataConverter converter){
+        this.cmap.put(converter.getEOJ().hashCode(), converter);
     }
     
-    static DataConverter getConverter(EOJ eoj){
+    private void addNotification(DataConverter converter) {
+        this.infomap.put(converter.getEOJ().hashCode(), converter);
+    }
+    
+    static DataConverter getPollingConverter(EOJ eoj){
         EOJ normalized = new EOJ(eoj.getClassGroupCode(), eoj.getClassCode(), (byte) 0x00);
-        return cmap.get(normalized.hashCode());
+        return singleton.cmap.get(normalized.hashCode());
     }
+    
+    static DataConverter getNotificationConverter(EOJ eoj){
+        EOJ normalized = new EOJ(eoj.getClassGroupCode(), eoj.getClassCode(), (byte) 0x00);
+        return singleton.infomap.get(normalized.hashCode());
+    }
+    
 }
