@@ -18,20 +18,38 @@ import java.util.logging.Logger;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        InfoServer server = new InfoServer();
-        server.start();
-
+        System.out.println("USAGE: [timeinterval] [IP] [port]\r\n");
+        
+        //argument parsing
+        //args[0] interval polling
+        int interval = 5;
+        if (args.length >= 1) {
+            interval = Integer.parseInt(args[0]);
+        }
+        
+        //args[1] ip address
         InetAddress address = null;
         try {
-            if (args.length > 0) {
-                address = InetAddress.getByName(args[0]);
+            if (args.length >= 2) {
+                address = InetAddress.getByName(args[1]);
             } else {
                 address = InetAddress.getByName("192.168.0.1");
             }
         } catch (UnknownHostException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        //args[2] port number
+        int port = 2345;
+        if (args.length >= 3) {
+            port = Integer.parseInt(args[2]);
+        }
+        
+        InfoServer server = new InfoServer(port);
+        server.start();
+        
         EchonetPoller poller = new EchonetPoller(address, server);
+        poller.setPollingInterval(interval);
         poller.startPolling();
 
         if (false) {

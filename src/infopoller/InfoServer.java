@@ -27,10 +27,14 @@ public class InfoServer {
     private Thread diseminator;
     private Thread acceptConnections;
 
-    public InfoServer() throws IOException {
+    public InfoServer(int port) throws IOException {
         messageList = Collections.synchronizedList(new ArrayList<>());
-        socket = new ServerSocket(2345);
+        socket = new ServerSocket(port);
         clientSockets = new ArrayList<>();
+    }
+    
+    public InfoServer() throws IOException {
+        this(2345);
     }
 
     public void addMessage(String message) {
