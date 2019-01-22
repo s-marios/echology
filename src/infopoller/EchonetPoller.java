@@ -37,6 +37,7 @@ public class EchonetPoller implements Runnable {
     private int pollingInterval;
     private List<String> filter = null;
 
+
     public EchonetPoller(InetAddress address, InfoServer server) {
         context = new EchonetNode(address);
         this.server = server;

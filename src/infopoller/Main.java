@@ -19,6 +19,7 @@ public class Main {
 
     
     public static void main(String[] args) throws IOException {
+
         System.out.println("USAGE: [-t timeinterval] [-i IP] [-p port] [-f filterstring]\r\n");
         
         ParseArgs pargs = new ParseArgs(args);
