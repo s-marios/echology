@@ -35,6 +35,7 @@ public class EchonetPoller implements Runnable {
     private final InfoServer server;
     private final List<PollingTarget> targets;
     private int pollingInterval;
+    private List<String> filter = null;
 
     public EchonetPoller(InetAddress address, InfoServer server) {
         context = new EchonetNode(address);
@@ -113,5 +114,8 @@ public class EchonetPoller implements Runnable {
         setupPolling(robjects);
         setupNotificationHandling(robjects);
     }
-
+    
+    public void setFilter(List<String> filter){
+        this.filter = filter;
+    }
 }

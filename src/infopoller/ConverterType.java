@@ -12,6 +12,7 @@ import infopoller.dataconverter.DataConverterHumidity;
 import infopoller.dataconverter.DataConverterLux;
 import infopoller.dataconverter.DataConverterTemperature;
 import infopoller.dataconverter.DataConverterVOC;
+import infopoller.dataconverter.DataConverterDistance;
 import jaist.echonet.EOJ;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -54,6 +55,7 @@ public class ConverterType {
         
         infomap = new ConcurrentHashMap<>();
         addNotification(new DataConverterHumanPresence());
+        addNotification(new DataConverterDistance());
     }
     
     private void addPolling(DataConverter converter){

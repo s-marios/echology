@@ -17,39 +17,19 @@ import java.util.logging.Logger;
  */
 public class Main {
 
+    
     public static void main(String[] args) throws IOException {
-        System.out.println("USAGE: [timeinterval] [IP] [port]\r\n");
+        System.out.println("USAGE: [-t timeinterval] [-i IP] [-p port] [-f filterstring]\r\n");
         
-        //argument parsing
-        //args[0] interval polling
-        int interval = 5;
-        if (args.length >= 1) {
-            interval = Integer.parseInt(args[0]);
-        }
+        ParseArgs pargs = new ParseArgs(args);
+        System.out.println(pargs.toString());
         
-        //args[1] ip address
-        InetAddress address = null;
-        try {
-            if (args.length >= 2) {
-                address = InetAddress.getByName(args[1]);
-            } else {
-                address = InetAddress.getByName("192.168.0.1");
-            }
-        } catch (UnknownHostException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        //args[2] port number
-        int port = 2345;
-        if (args.length >= 3) {
-            port = Integer.parseInt(args[2]);
-        }
-        
-        InfoServer server = new InfoServer(port);
+        InfoServer server = new InfoServer(pargs.port);
         server.start();
         
-        EchonetPoller poller = new EchonetPoller(address, server);
-        poller.setPollingInterval(interval);
+        EchonetPoller poller = new EchonetPoller(pargs.address, server);
+        poller.setPollingInterval(pargs.interval);
+        poller.setFilter(pargs.filter);
         poller.startPolling();
 
         if (false) {
