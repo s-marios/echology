@@ -17,8 +17,8 @@ public class DataConverterDistance extends DataConverterBase {
 
     @Override
     protected String convertData(byte[] data) {
-        int distance = (((int) data[0]  & 0x0000ff00 ) << 8) | (int) data[1] & 0x000000ff;
+        int distance = (((int) data[0] & 0x0000ff00) << 8) | (int) data[1] & 0x000000ff;
         return Integer.toString(distance);
     }
-    
+
 }

@@ -66,7 +66,7 @@ class ParseArgs {
 
     private void setupDefaultAddress() {
         try {
-            InetAddress.getByName("192.168.0.1");
+            address = InetAddress.getByName("192.168.0.1");
         } catch (UnknownHostException ex) {
             System.out.println("It's not happening.");
         }
@@ -74,7 +74,7 @@ class ParseArgs {
     
     public String toString(){
         StringBuilder sb = new StringBuilder();
-        sb.append("Parsed arguments: ");
+        sb.append("ParseArgs ");
         sb.append("port: ");
         sb.append(Integer.toString(port));
         sb.append(" interval: ");
