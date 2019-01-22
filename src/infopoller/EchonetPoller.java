@@ -35,13 +35,13 @@ public class EchonetPoller implements Runnable {
     private final InfoServer server;
     private final List<PollingTarget> targets;
     private int pollingInterval;
-    private List<String> filter = null;
-
+    private List<String> filter;
 
     public EchonetPoller(InetAddress address, InfoServer server) {
         context = new EchonetNode(address);
         this.server = server;
         this.targets = new ArrayList<>();
+        this.filter = new ArrayList<>();
         this.pollingInterval = 10;
         context.start();
     }
@@ -56,7 +56,7 @@ public class EchonetPoller implements Runnable {
 
         for (RemoteEchonetObject robject : robjects) {
             DataConverter converter = ConverterType.getPollingConverter(robject.getEOJ());
-            if (converter != null) {
+            if (isValidConverter(converter)) {
                 targets.add(new PollingTarget(robject, converter));
             }
         }
@@ -100,7 +100,7 @@ public class EchonetPoller implements Runnable {
 
         for (EOJ eoj : eojset) {
             DataConverter nconverter = ConverterType.getNotificationConverter(eoj);
-            if (nconverter != null) {
+            if (isValidConverter(nconverter)) {
                 NotificationListenerTarget nlt = new NotificationListenerTarget(nconverter, eoj, server);
                 context.registerForNotifications(null, eoj.getClassGroupCode(), eoj.getClassCode(), eoj.getInstanceCode(), nconverter.getEPC(), nlt);
             }
@@ -115,8 +115,18 @@ public class EchonetPoller implements Runnable {
         setupPolling(robjects);
         setupNotificationHandling(robjects);
     }
-    
-    public void setFilter(List<String> filter){
-        this.filter = filter;
+
+    public void setFilter(List<String> filter) {
+        this.filter.addAll(filter);
+    }
+
+    boolean isValidConverter(DataConverter converter) {
+        if (converter == null) {
+            return false;
+        }
+        if (filter.contains(converter.getInfoTypeString())) {
+            return false;
+        }
+        return true;
     }
 }
