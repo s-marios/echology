@@ -20,7 +20,7 @@ public class DataConverterOperationStatus extends DataConverterBase {
         if (data[0] == (byte) 0x30) {
             return Integer.toString(1);
         } else {
-            return Integer.toString(1);
+            return Integer.toString(0);
         }
     }
 

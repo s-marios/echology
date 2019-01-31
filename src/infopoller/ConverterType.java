@@ -22,17 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author haha
  */
-public class ConverterType {
-    
-    //TODO change enum to... class again?
-    /*
-    TEMP ("001100", "TEMP", new DataConverterTemperature()),
-    HUMIDITY ("001200", "HMDT", new DataConverterHumidity()),
-    //evoc and co2 are doing the same thing, use the same converter.
-    EVOC ("001D00", "EVOC", new DataConverterCO2()),
-    CO2 ("001B00", "CO2", new DataConverterCO2()),
-    TEST("000700", "PRSN", new DataConverterTemperature());
-    */        
+public class ConverterType {     
     
     /**
      * A map that holds EOJ.hashCode() <-> ctype mappings
@@ -53,11 +43,12 @@ public class ConverterType {
         addPolling(new DataConverterVOC());
         addPolling(new DataConverterCO2());
         addPolling(new DataConverterLux());
+        addPolling(new DataConverterOperationStatus("029000", "LGHT"));
         
         infomap = new ConcurrentHashMap<>();
         addNotification(new DataConverterHumanPresence());
         addNotification(new DataConverterDistance());
-        addNotification(new DataConverterOperationStatus("029000", "LGHT"));
+        //addNotification(new DataConverterOperationStatus("029000", "LGHT"));
     }
     
     private void addPolling(DataConverter converter){
