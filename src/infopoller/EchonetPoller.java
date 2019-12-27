@@ -129,4 +129,8 @@ public class EchonetPoller implements Runnable {
         }
         return true;
     }
+    
+    public EchonetNode getContext() {
+        return context;
+    }
 }

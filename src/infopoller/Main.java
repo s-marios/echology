@@ -10,6 +10,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import proxy.EchonetProxy;
 
 /**
  *
@@ -32,6 +33,9 @@ public class Main {
         poller.setPollingInterval(pargs.interval);
         poller.setFilter(pargs.filter);
         poller.startPolling();
+        
+        EchonetProxy proxy = new EchonetProxy();
+        proxy.start(poller.getContext());
 
         if (false) {
             //testing..
