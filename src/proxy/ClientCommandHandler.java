@@ -39,7 +39,7 @@ public class ClientCommandHandler implements EchoEventListener {
 
     //example command: "IP:EOJ:PropCode[,Value]
     ClientCommandHandler(String command) throws InvalidTargetException {
-        StringTokenizer commandTokenizer = new StringTokenizer(command,",");
+        StringTokenizer commandTokenizer = new StringTokenizer(command, ",");
         try {
             this.target = commandTokenizer.nextToken();
         } catch (NoSuchElementException ex) {
@@ -67,7 +67,7 @@ public class ClientCommandHandler implements EchoEventListener {
 
         byte[] propCodeAsBytes = Utils.hexStringToByteArray(property_code_string);
         //bytes are signed, thus we actually expect 0x80 -0xFF range, thus 'negative' or zero
-        if (propCodeAsBytes == null || propCodeAsBytes.length == 0 || propCodeAsBytes[0] > 0) { 
+        if (propCodeAsBytes == null || propCodeAsBytes.length == 0 || propCodeAsBytes[0] > 0) {
             throw new InvalidTargetException("invalid property code: " + property_code_string);
         } else {
             this.property_code = propCodeAsBytes[0];
@@ -116,19 +116,23 @@ public class ClientCommandHandler implements EchoEventListener {
         } else {
             response = ByteBuffer.allocate(512);
             CharBuffer char_response = response.asCharBuffer();
-            
+
             ServiceCode responseCode = answer.getResponseCode();
             if (responseCode == ServiceCode.Get_Res || responseCode == ServiceCode.Set_Res) {
                 char_response.append("OK,");
             } else {
                 char_response.append("NG,");
             }
-            
-            //reuse target, eoj from before
-            char_response.append(target);
-            char_response.append(",");
+
+            //regeneratee target, in case of multicasts and/or multiple targets
+            char_response.append(answer.getResponder().getQueryIp().getHostAddress());
+            char_response.append(":");
+            char_response.append(answer.getResponder().getEOJ().toString());
 
             for (EchonetProperty property : answer.getProperties()) {
+                char_response.append(String.format(":0x%02X", property.getPropertyCode()));
+                char_response.append(",");
+
                 byte[] property_data = property.read();
                 if (property_data != null) {
                     //we got some data back
