@@ -6,7 +6,6 @@
 package proxy;
 
 import jaist.echonet.EchonetCharacterProperty;
-import jaist.echonet.EchonetDateProperty;
 import jaist.echonet.EchonetDummyProperty;
 import jaist.echonet.EchonetNode;
 import jaist.echonet.EchonetProperty;
@@ -14,16 +13,12 @@ import jaist.echonet.RemoteEchonetObject;
 import jaist.echonet.ServiceCode;
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -81,11 +76,19 @@ public class EchonetProxy implements Runnable {
                             SocketChannel client = ((ServerSocketChannel) key.channel()).accept();
                             client.configureBlocking(NO_BLOCKING);
                             client.register(selector, SelectionKey.OP_READ);
+                            System.out.println("New Proxy Client Connected: " + client.getRemoteAddress().toString());
                         }
                         if (key.isReadable()) {
                             //a client send us stuff to do
                             //read its stuff and pass it to a que for further processing
-                            readFromClient(key);
+                            int bytes_read = readFromClient(key);
+                            if (bytes_read == -1) {
+                                //our client disconnected. deal with it.
+                                String remote_address = ((SocketChannel) key.channel()).getRemoteAddress().toString();
+                                System.out.println("Proxy Client Disconnected: " + remote_address);
+                                //let's cancel this key and never speak of it again.
+                                key.cancel();
+                            }
                         }
                     }
                 }
@@ -104,42 +107,50 @@ public class EchonetProxy implements Runnable {
         server_thread.start();
     }
 
-    void readFromClient(SelectionKey key) throws IOException {
+    /**
+     * 
+     * @param key
+     * @return bytes read from client, -1 for disconnect
+     * @throws IOException 
+     */
+    int readFromClient(SelectionKey key) throws IOException {
         //get the client command buffer or make one if none's present
         ClientCommandBuffer client_buffer = client_buffers.get(key);
         if (client_buffer == null) {
             client_buffer = new ClientCommandBuffer(key);
             client_buffers.put(key, client_buffer);
         }
-        
-        client_buffer.receiveData();
-        
-        for (ClientCommandHandler command :client_buffer.getCommands()) {
+
+        int result = client_buffer.receiveData();
+
+        for (ClientCommandHandler command : client_buffer.getCommands()) {
             System.out.println("command: " + command.toString());
-        
+
             //perform whatever the client command wants us to
             executeClientCommand(command);
         }
+        
+        return result;
     }
 
     private void executeClientCommand(ClientCommandHandler command) {
         //get our remote object, the target of this command
-        RemoteEchonetObject remoteObject = context.getRemoteObject(command.getIp(),command.getEOJ());
-        
+        RemoteEchonetObject remoteObject = context.getRemoteObject(command.getIp(), command.getEOJ());
+
         //start by setting up a get operation for this property
         ServiceCode service = ServiceCode.Get;
-        EchonetProperty property = new  EchonetDummyProperty(command.getEPC());
+        EchonetProperty property = new EchonetDummyProperty(command.getEPC());
 
         //if we do have a value, change to Set opertation
         if (command.getValue() != null) {
             service = ServiceCode.SetC;
             property = new EchonetCharacterProperty(command.getEPC(), true, true, false, command.getValue());
         }
-        
+
         //perform the actual command
         List<EchonetProperty> propertyList = Collections.singletonList(property);
-        context.makeQuery(context.getNodeProfileObject().getEchonetObject(), 
-                remoteObject, service, propertyList , null, command);
+        context.makeQuery(context.getNodeProfileObject().getEchonetObject(),
+                remoteObject, service, propertyList, null, command);
     }
 
 }
