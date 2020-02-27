@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package infopoller;
 
 import java.io.IOException;
@@ -17,7 +12,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author haha
+ * @author smarios@jaist.ac.jp
  */
 public class InfoServer {
 
@@ -32,7 +27,7 @@ public class InfoServer {
         socket = new ServerSocket(port);
         clientSockets = new ArrayList<>();
     }
-    
+
     public InfoServer() throws IOException {
         this(2345);
     }
@@ -57,7 +52,7 @@ public class InfoServer {
                     //get message and remove it from our list
                     String message = msgIterator.next();
                     msgIterator.remove();
-                    
+
                     Iterator<Socket> clientIterator = clientSockets.iterator();
                     while (clientIterator.hasNext()) {
                         Socket client = clientIterator.next();
@@ -71,7 +66,7 @@ public class InfoServer {
                         }
                     } //client iteration
                 } //message iteration
-                
+
             }
         }
     }

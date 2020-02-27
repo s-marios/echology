@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package infopoller;
 
 import infopoller.dataconverter.DataConverter;
@@ -20,36 +15,29 @@ import java.util.concurrent.TimeUnit;
 
 /**
  *
- * @author haha
+ * @author smarios@jaist.ac.jp
  */
 public class EchonetPoller implements Runnable {
-
-    /**
-     * @param pollingInterval the pollingInterval to set
-     */
-    public void setPollingInterval(int pollingInterval) {
-        this.pollingInterval = pollingInterval;
-    }
 
     private final EchonetNode context;
     private final InfoServer server;
     private final List<PollingTarget> targets;
-    private int pollingInterval;
-    private List<String> filter;
+    private long pollingInterval;
+    private final List<String> filter;
 
     public EchonetPoller(InetAddress address, InfoServer server) {
         context = new EchonetNode(address);
         this.server = server;
         this.targets = new ArrayList<>();
         this.filter = new ArrayList<>();
-        this.pollingInterval = 10;
+        this.pollingInterval = 10000;
         context.start();
     }
 
     public void startPolling() {
         setup();
         ScheduledExecutorService service = new ScheduledThreadPoolExecutor(1);
-        service.scheduleAtFixedRate(this, 1, this.pollingInterval, TimeUnit.SECONDS);
+        service.scheduleAtFixedRate(this, 1000, this.pollingInterval, TimeUnit.MILLISECONDS);
     }
 
     private void setupPolling(List<RemoteEchonetObject> robjects) {
@@ -58,6 +46,16 @@ public class EchonetPoller implements Runnable {
             DataConverter converter = ConverterType.getPollingConverter(robject.getEOJ());
             if (isValidConverter(converter)) {
                 targets.add(new PollingTarget(robject, converter));
+            }
+        }
+
+        if (!targets.isEmpty()) {
+            long timeout = this.pollingInterval / targets.size();
+            System.out.format("Setting query timeout to: %d ms \n", timeout);
+            for (PollingTarget target : targets) {
+                //set an aggressive timeout for requests
+                //make sure they all finish in time
+                target.getRemoteObject().setTimeout(timeout);
             }
         }
     }
@@ -83,6 +81,14 @@ public class EchonetPoller implements Runnable {
         //we failed
         System.out.println(String.format("Polling failed for object: %s EOJ: %s", robject.getQueryIp().toString(), robject.getEOJ().toString()));
         return null;
+    }
+
+    /**
+     * @param pollingInterval the pollingInterval to set in seconds
+     */
+    public void setPollingInterval(int pollingInterval) {
+        //internally it's milliseconds
+        this.pollingInterval = pollingInterval * 1000;
     }
 
     @Override
@@ -129,7 +135,7 @@ public class EchonetPoller implements Runnable {
         }
         return true;
     }
-    
+
     public EchonetNode getContext() {
         return context;
     }

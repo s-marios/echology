@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package infopoller;
 
 import java.net.InetAddress;
@@ -13,7 +8,7 @@ import java.util.StringTokenizer;
 
 /**
  *
- * @author haha
+ * @author smarios@jaist.ac.jp
  */
 class ParseArgs {
 
@@ -71,8 +66,8 @@ class ParseArgs {
             System.out.println("It's not happening.");
         }
     }
-    
-    public String toString(){
+
+    public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("ParseArgs ");
         sb.append("port: ");

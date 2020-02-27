@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package infopoller;
 
 import java.io.IOException;
@@ -14,26 +9,25 @@ import proxy.EchonetProxy;
 
 /**
  *
- * @author haha
+ * @author smarios@jaist.ac.jp
  */
 public class Main {
 
-    
     public static void main(String[] args) throws IOException {
 
         System.out.println("USAGE: [-t timeinterval] [-i IP] [-p port] [-f filterstring]\r\n");
-        
+
         ParseArgs pargs = new ParseArgs(args);
         System.out.println(pargs.toString());
-        
+
         InfoServer server = new InfoServer(pargs.port);
         server.start();
-        
+
         EchonetPoller poller = new EchonetPoller(pargs.address, server);
         poller.setPollingInterval(pargs.interval);
         poller.setFilter(pargs.filter);
         poller.startPolling();
-        
+
         EchonetProxy proxy = new EchonetProxy();
         proxy.start(poller.getContext());
 
@@ -55,7 +49,7 @@ public class Main {
             });
             testing.start();
         }
-        
+
     }
 
 }
