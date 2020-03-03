@@ -44,7 +44,6 @@ public class InfoServer {
             //do nothing, we have no clients
             return;
         }
-//            TODO Synchronize on the iterator for the messages?
         synchronized (messageList) {
             Iterator<String> msgIterator = messageList.iterator();
             synchronized (clientSockets) {

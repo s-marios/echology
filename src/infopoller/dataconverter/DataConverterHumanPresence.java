@@ -1,15 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package infopoller.dataconverter;
 
 /**
  *
- * @author haha
+ * @author smarios@jaist.ac.jp
  */
-public class DataConverterHumanPresence extends DataConverterBase{
+public class DataConverterHumanPresence extends DataConverterBase {
 
     public DataConverterHumanPresence() {
         super("000700", (byte) 0xB1, "PRSN");
@@ -17,7 +12,8 @@ public class DataConverterHumanPresence extends DataConverterBase{
 
     @Override
     protected String convertData(byte[] data) {
+        assert data != null && data.length == 1;
         return data[0] == (byte) 0x41 ? "1" : "0";
     }
-    
+
 }

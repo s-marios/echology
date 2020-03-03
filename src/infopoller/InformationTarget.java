@@ -23,5 +23,5 @@ public class InformationTarget {
         builder.append("\n");
         return builder.toString();
     }
-    
+
 }

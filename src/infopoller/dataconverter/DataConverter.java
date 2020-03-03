@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package infopoller.dataconverter;
 
 import jaist.echonet.EOJ;
@@ -10,13 +5,21 @@ import jaist.echonet.EOJ;
 /**
  * Converter class that that handles the conversion of binary ECHONET Lite data
  * into strings, suitable for consumption by logstash.
+ *
+ * Before you create new data converters, make sure that none of the generic
+ * ones suit your needs, e.g. {@link DataConverterShort DataConverterShort} etc.
+ *
+ * Register your converter at the static initialization of the
+ * {@link infopoller.Converters Converters} class
+ *
  * @author Marios Sioutis
  */
 public interface DataConverter {
 
     /**
-     * Returns a string representation of the binary data that this converter 
-     * handles. 
+     * Returns a string representation of the binary data that this converter
+     * handles.
+     *
      * @param data
      * @return
      */
@@ -29,6 +32,8 @@ public interface DataConverter {
      * @return information type as a String.
      */
     String getInfoTypeString();
+
     byte getEPC();
+
     EOJ getEOJ();
 }

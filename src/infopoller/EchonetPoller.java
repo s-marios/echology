@@ -6,9 +6,7 @@ import jaist.echonet.EchonetNode;
 import jaist.echonet.RemoteEchonetObject;
 import java.net.InetAddress;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -43,9 +41,10 @@ public class EchonetPoller implements Runnable {
     private void setupPolling(List<RemoteEchonetObject> robjects) {
 
         for (RemoteEchonetObject robject : robjects) {
-            DataConverter converter = ConverterType.getPollingConverter(robject.getEOJ());
-            if (isValidConverter(converter)) {
-                targets.add(new PollingTarget(robject, converter));
+            for (DataConverter converter : Converters.getConverters(robject, Converters.TYPE.POLLING)) {
+                if (isValidConverter(converter)) {
+                    targets.add(new PollingTarget(robject, converter));
+                }
             }
         }
 
@@ -97,18 +96,13 @@ public class EchonetPoller implements Runnable {
     }
 
     private void setupNotificationHandling(List<RemoteEchonetObject> robjects) {
-        //TODO see TODO on notification listener target
-        //handling of the instance byte
-        Set<EOJ> eojset = new HashSet<>();
         for (RemoteEchonetObject robject : robjects) {
-            eojset.add(robject.getEOJ());
-        }
-
-        for (EOJ eoj : eojset) {
-            DataConverter nconverter = ConverterType.getNotificationConverter(eoj);
-            if (isValidConverter(nconverter)) {
-                NotificationListenerTarget nlt = new NotificationListenerTarget(nconverter, eoj, server);
-                context.registerForNotifications(null, eoj.getClassGroupCode(), eoj.getClassCode(), eoj.getInstanceCode(), nconverter.getEPC(), nlt);
+            for (DataConverter converter : Converters.getConverters(robject, Converters.TYPE.NOTIFICATION)) {
+                if (isValidConverter(converter)) {
+                    EOJ reoj = robject.getEOJ();
+                    NotificationListenerTarget nlt = new NotificationListenerTarget(converter, reoj, server);
+                    context.registerForNotifications(null, reoj.getClassGroupCode(), reoj.getClassCode(), reoj.getInstanceCode(), converter.getEPC(), nlt);
+                }
             }
         }
     }
@@ -116,6 +110,7 @@ public class EchonetPoller implements Runnable {
     private void setup() {
         List<RemoteEchonetObject> robjects = context.getNodeDiscovery().discoverAllObjectsBlocking();
         for (RemoteEchonetObject robject : robjects) {
+            robject.updatePropertyList();
             System.out.println(String.format("robject: %s eoj: %s", robject.getQueryIp().toString(), robject.getEOJ().toString()));
         }
         setupPolling(robjects);
