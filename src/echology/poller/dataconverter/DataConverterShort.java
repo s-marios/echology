@@ -1,4 +1,4 @@
-package infopoller.dataconverter;
+package echology.poller.dataconverter;
 
 /**
  * A generic converter suitable for 2-byte properties, unsigned

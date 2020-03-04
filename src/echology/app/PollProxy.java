@@ -1,22 +1,28 @@
-package infopoller;
+package echology.app;
 
+import echology.poller.EchonetPoller;
+import echology.poller.InfoServer;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import proxy.EchonetProxy;
+import echology.proxy.EchonetProxy;
 
 /**
+ * A polling and command proxy application
  *
  * @author smarios@jaist.ac.jp
  */
-public class Main {
+public class PollProxy {
 
     public static void main(String[] args) throws IOException {
 
-        System.out.println("USAGE: [-t timeinterval] [-i IP] [-p port] [-f filterstring]\r\n");
+        System.out.println("USAGE: [-t timeinterval] [-i IP] [-p port] [-f filterstring]");
+        System.out.println("  filterstring is a comma-separated list of data type");
+        System.out.println("  example: TMP,VOC,C02,HMDT etc.\r\n");
 
         ParseArgs pargs = new ParseArgs(args);
         System.out.println(pargs.toString());
+        System.out.println("Default proxy port is: " + EchonetProxy.PROXY_PORT);
 
         InfoServer server = new InfoServer(pargs.port);
         server.start();
@@ -40,7 +46,7 @@ public class Main {
                             Thread.sleep(3000);
                             server.addMessage("Message: " + i++ + "\r\n");
                         } catch (InterruptedException ex) {
-                            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(PollProxy.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
                 }

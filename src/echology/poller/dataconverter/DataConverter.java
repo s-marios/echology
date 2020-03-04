@@ -1,4 +1,4 @@
-package infopoller.dataconverter;
+package echology.poller.dataconverter;
 
 import jaist.echonet.EOJ;
 
@@ -10,7 +10,7 @@ import jaist.echonet.EOJ;
  * ones suit your needs, e.g. {@link DataConverterShort DataConverterShort} etc.
  *
  * Register your converter at the static initialization of the
- * {@link infopoller.Converters Converters} class
+ * {@link echology.poller.dataconverter.Converters Converters} class
  *
  * @author Marios Sioutis
  */
@@ -33,7 +33,16 @@ public interface DataConverter {
      */
     String getInfoTypeString();
 
-    byte getEPC();
+    /**
+     * Get the property code associated with this converter
+     *
+     * @return the property code
+     */
+    public byte getEPC();
 
-    EOJ getEOJ();
+    /**
+     * Get the associated ECHONET Lite object class information
+     * @return the EOJ associated with this converter
+     */
+    public EOJ getEOJ();
 }

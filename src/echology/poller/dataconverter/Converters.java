@@ -1,12 +1,5 @@
-package infopoller;
+package echology.poller.dataconverter;
 
-import infopoller.dataconverter.DataConverter;
-import infopoller.dataconverter.DataConverterByte;
-import infopoller.dataconverter.DataConverterHumanPresence;
-import infopoller.dataconverter.DataConverterInt;
-import infopoller.dataconverter.DataConverterTemperature;
-import infopoller.dataconverter.DataConverterOperationStatus;
-import infopoller.dataconverter.DataConverterShort;
 import jaist.echonet.EOJ;
 import jaist.echonet.EchonetProperty;
 import jaist.echonet.RemoteEchonetObject;
@@ -18,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Keeps track of the available converters in the system.
  *
- * Retrieve available converters using the {@link Converters#getConverters(jaist.echonet.RemoteEchonetObject, infopoller.Converters.TYPE)
+ * Retrieve available converters using the {@link Converters#getConverters(jaist.echonet.RemoteEchonetObject, echology.poller.dataconverter.Converters.TYPE) 
  * getConverters} static method. Register new converters in the constructor of
  * this class.
  *

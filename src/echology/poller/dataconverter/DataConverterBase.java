@@ -1,4 +1,4 @@
-package infopoller.dataconverter;
+package echology.poller.dataconverter;
 
 import jaist.echonet.EOJ;
 

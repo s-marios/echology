@@ -1,13 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package proxy;
+package echology.proxy;
 
 import jaist.echonet.EOJ;
 import jaist.echonet.EchoEventListener;
 import jaist.echonet.EchonetAnswer;
+import jaist.echonet.EchonetNode;
 import jaist.echonet.EchonetProperty;
 import jaist.echonet.RemoteEchonetObject;
 import jaist.echonet.ServiceCode;
@@ -25,25 +21,55 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * A command received from the client. Contains information necessary to make a
+ * an ECHONET Lite query using {@link EchonetNode#makeQuery(jaist.echonet.AbstractEchonetObject, jaist.echonet.AbstractEchonetObject, jaist.echonet.ServiceCode, java.util.List, java.util.List, jaist.echonet.EchoEventListener)
+ * makeQuery()}. IP address, ECHONET Lite object, property code and an optional
+ * value for set queries.
  *
- * @author haha
+ * A command target is of the form IP:EOJ:PC[,value]. IP can be a multicast
+ * address; EOJ may specify multiple instances using class instance zero; PC is
+ * a hexadecimal representation of the property code to be queried, and value is
+ * the data used with Set commands.
+ *
+ * Example of valid commands - set all lights in the network to ON
+ * 224.0.23.0:029000:0x80,0x30 - get the operation status of the target
+ * 192.168.0.1:001101 192.168.0.1:001101:0x80
+ *
+ * Responses follow the same RESULT,IP:EOJ:PC[,value] where RESULT := [OK|NG]
+ * for success and failure respectively
+ *
+ * example: - OK,192.168.0.105:001101:0xE0,0x00F3
+ *
+ * @author smarios@jaist.ac.jp
  */
-public class ClientCommandHandler implements EchoEventListener {
+public class ClientCommand implements EchoEventListener {
 
     private SelectionKey client_key;
+
+    /**
+     * The target of this command (IP:EOJ:EPC combination), as a string
+     */
     private final String target;
-    private final EOJ eoj;
+
+    /**
+     * An optional field representing the set data used in set commands
+     */
     private byte[] value;
-    private final byte property_code;
+
+    //target ip
     private InetAddress ip;
+    //target eoj
+    private final EOJ eoj;
+    //target property code
+    private final byte property_code;
 
     //example command: "IP:EOJ:PropCode[,Value]
-    ClientCommandHandler(String command) throws InvalidTargetException {
+    ClientCommand(String command) throws InvalidTargetException {
         StringTokenizer commandTokenizer = new StringTokenizer(command, ",");
         try {
             this.target = commandTokenizer.nextToken();
         } catch (NoSuchElementException ex) {
-            throw new InvalidTargetException("null target");
+            throw new InvalidTargetException(null);
         }
         //handle the target: ip, eoj, property_code
         StringTokenizer tokenizer = new StringTokenizer(target, ":");
@@ -76,14 +102,14 @@ public class ClientCommandHandler implements EchoEventListener {
         try {
             this.ip = InetAddress.getByName(ipstring);
         } catch (UnknownHostException ex) {
-            Logger.getLogger(ClientCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ClientCommand.class.getName()).log(Level.SEVERE, null, ex);
             throw new InvalidTargetException("invalid IP address: " + ipstring);
         }
 
         try {
             this.eoj = new EOJ(eojstring);
         } catch (IllegalArgumentException ex) {
-            Logger.getLogger(ClientCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ClientCommand.class.getName()).log(Level.SEVERE, null, ex);
             throw new InvalidTargetException("invalid EOJ: " + eojstring);
         }
 
@@ -146,7 +172,7 @@ public class ClientCommandHandler implements EchoEventListener {
         try {
             ((SocketChannel) getClient_key().channel()).write(response);
         } catch (IOException ex) {
-            Logger.getLogger(ClientCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ClientCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }

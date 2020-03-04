@@ -1,4 +1,4 @@
-package infopoller;
+package echology.app;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -67,16 +67,17 @@ class ParseArgs {
         }
     }
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("ParseArgs ");
-        sb.append("port: ");
+        sb.append("Arguments - ");
+        sb.append("poller port: ");
         sb.append(Integer.toString(port));
-        sb.append(" interval: ");
+        sb.append(", interval: ");
         sb.append(Integer.toString(interval));
-        sb.append(" Hostname: ");
+        sb.append(", Hostname: ");
         sb.append(address.toString());
-        sb.append(" filter: ");
+        sb.append(", filter: ");
         for (String ftype : filter) {
             sb.append(ftype);
             sb.append(" ");

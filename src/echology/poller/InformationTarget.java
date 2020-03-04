@@ -1,6 +1,6 @@
-package infopoller;
+package echology.poller;
 
-import infopoller.dataconverter.DataConverter;
+import echology.poller.dataconverter.DataConverter;
 import jaist.echonet.RemoteEchonetObject;
 
 /**

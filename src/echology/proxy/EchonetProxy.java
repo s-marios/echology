@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package proxy;
+package echology.proxy;
 
 import jaist.echonet.EchonetCharacterProperty;
 import jaist.echonet.EchonetDummyProperty;
@@ -38,9 +33,8 @@ public class EchonetProxy implements Runnable {
     private final Selector selector;
     private boolean done;
     private EchonetNode context;
-    private Map<SelectionKey, ClientCommandBuffer> client_buffers;
+    private Map<SelectionKey, Client> client_buffers;
 
-    //private List<ByteBuffer> incoming;
     private static final boolean NO_BLOCKING = false;
 
     public EchonetProxy(int port) throws IOException {
@@ -50,7 +44,6 @@ public class EchonetProxy implements Runnable {
         server_channel.bind(new InetSocketAddress(port));
         server_channel.register(selector, SelectionKey.OP_ACCEPT);
 
-        //incoming = new ArrayList<>();
         client_buffers = new HashMap<>();
     }
 
@@ -108,32 +101,32 @@ public class EchonetProxy implements Runnable {
     }
 
     /**
-     * 
+     *
      * @param key
      * @return bytes read from client, -1 for disconnect
-     * @throws IOException 
+     * @throws IOException
      */
     int readFromClient(SelectionKey key) throws IOException {
         //get the client command buffer or make one if none's present
-        ClientCommandBuffer client_buffer = client_buffers.get(key);
+        Client client_buffer = client_buffers.get(key);
         if (client_buffer == null) {
-            client_buffer = new ClientCommandBuffer(key);
+            client_buffer = new Client(key);
             client_buffers.put(key, client_buffer);
         }
 
         int result = client_buffer.receiveData();
 
-        for (ClientCommandHandler command : client_buffer.getCommands()) {
+        for (ClientCommand command : client_buffer.getCommands()) {
             System.out.println("command: " + command.toString());
 
             //perform whatever the client command wants us to
             executeClientCommand(command);
         }
-        
+
         return result;
     }
 
-    private void executeClientCommand(ClientCommandHandler command) {
+    private void executeClientCommand(ClientCommand command) {
         //get our remote object, the target of this command
         RemoteEchonetObject remoteObject = context.getRemoteObject(command.getIp(), command.getEOJ());
 

@@ -1,4 +1,4 @@
-package infopoller.dataconverter;
+package echology.poller.dataconverter;
 
 /**
  *

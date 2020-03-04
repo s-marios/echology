@@ -1,4 +1,4 @@
-package infopoller;
+package echology.poller;
 
 import java.io.IOException;
 import java.net.ServerSocket;
