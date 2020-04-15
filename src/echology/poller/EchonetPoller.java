@@ -5,7 +5,6 @@ import echology.poller.dataconverter.DataConverter;
 import jaist.echonet.EOJ;
 import jaist.echonet.EchonetNode;
 import jaist.echonet.RemoteEchonetObject;
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
@@ -24,13 +23,12 @@ public class EchonetPoller implements Runnable {
     private long pollingInterval;
     private final List<String> filter;
 
-    public EchonetPoller(InetAddress address, InfoServer server) {
-        context = new EchonetNode(address);
+    public EchonetPoller(EchonetNode context, InfoServer server) {
+        this.context = context;
         this.server = server;
         this.targets = new ArrayList<>();
         this.filter = new ArrayList<>();
         this.pollingInterval = 10000;
-        context.start();
     }
 
     public void startPolling() {

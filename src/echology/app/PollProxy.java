@@ -3,9 +3,8 @@ package echology.app;
 import echology.poller.EchonetPoller;
 import echology.poller.InfoServer;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import echology.proxy.EchonetProxy;
+import jaist.echonet.EchonetNode;
 
 /**
  * A polling and command proxy application
@@ -16,42 +15,36 @@ public class PollProxy {
 
     public static void main(String[] args) throws IOException {
 
-        System.out.println("USAGE: [-t timeinterval] [-i IP] [-p port] [-f filterstring]");
+        System.out.println("USAGE: [--no-polling] [--no-proxy] [-t timeinterval] [-i IP] [-p pollingport] [-pp proxyport] [-f filterstring]");
         System.out.println("  filterstring is a comma-separated list of data type");
-        System.out.println("  example: TMP,VOC,C02,HMDT etc.\r\n");
+        System.out.println("  filterstring example: TMP,VOC,C02,HMDT etc.\r\n");
 
         ParseArgs pargs = new ParseArgs(args);
         System.out.println(pargs.toString());
-        System.out.println("Default proxy port is: " + EchonetProxy.PROXY_PORT);
 
-        InfoServer server = new InfoServer(pargs.port);
-        server.start();
+        if (!(pargs.doPolling || pargs.doProxy)) {
+            System.out.println("Warning: neither polling nor proxying was specified. Exiting...");
+            System.exit(1);
+        }
 
-        EchonetPoller poller = new EchonetPoller(pargs.address, server);
-        poller.setPollingInterval(pargs.interval);
-        poller.setFilter(pargs.filter);
-        poller.startPolling();
+        EchonetNode context = new EchonetNode(pargs.address);
+        context.start();
 
-        EchonetProxy proxy = new EchonetProxy();
-        proxy.start(poller.getContext());
+        if (pargs.doPolling) {
+            System.out.println("Polling port is: " + pargs.pollingPort);
+            InfoServer server = new InfoServer(pargs.pollingPort);
+            server.start();
 
-        if (false) {
-            //testing..
-            Thread testing = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    int i = 0;
-                    while (true) {
-                        try {
-                            Thread.sleep(3000);
-                            server.addMessage("Message: " + i++ + "\r\n");
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(PollProxy.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                }
-            });
-            testing.start();
+            EchonetPoller poller = new EchonetPoller(context, server);
+            poller.setPollingInterval(pargs.interval);
+            poller.setFilter(pargs.filter);
+            poller.startPolling();
+        }
+
+        if (pargs.doProxy) {
+            System.out.println("Proxy port is: " + pargs.proxyPort);
+            EchonetProxy proxy = new EchonetProxy(pargs.proxyPort);
+            proxy.start(context);
         }
 
     }

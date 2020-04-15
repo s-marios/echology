@@ -14,12 +14,14 @@ class ParseArgs {
 
     int interval = 5;
     InetAddress address = null;
-    int port = 2345;
+    int pollingPort = 2345;
     List<String> filter = new ArrayList<>();
+    boolean doPolling = true;
+    boolean doProxy = true;
+    int proxyPort = 3361;
 
     ParseArgs(String[] args) {
         int arglength = args.length;
-        this.setupDefaultAddress();
         for (int i = 0; i < arglength; i++) {
             try {
                 switch (args[i]) {
@@ -30,10 +32,19 @@ class ParseArgs {
                         address = InetAddress.getByName(args[++i]);
                         break;
                     case "-p":
-                        port = Integer.parseInt(args[++i]);
+                        pollingPort = Integer.parseInt(args[++i]);
+                        break;
+                    case "-pp":
+                        proxyPort = Integer.parseInt(args[++i]);
                         break;
                     case "-f":
                         parseFilter(args[++i]);
+                        break;
+                    case "--no-polling":
+                        doPolling = false;
+                        break;
+                    case "--no-proxy":
+                        doProxy = false;
                         break;
                     default:
                         System.out.println("Unrecognized option: " + args[i]);
@@ -59,24 +70,20 @@ class ParseArgs {
         }
     }
 
-    private void setupDefaultAddress() {
-        try {
-            address = InetAddress.getByName("192.168.0.1");
-        } catch (UnknownHostException ex) {
-            System.out.println("It's not happening.");
-        }
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Arguments - ");
         sb.append("poller port: ");
-        sb.append(Integer.toString(port));
+        sb.append(Integer.toString(pollingPort));
         sb.append(", interval: ");
         sb.append(Integer.toString(interval));
         sb.append(", Hostname: ");
-        sb.append(address.toString());
+        if (address == null) {
+            sb.append( "(empty)");
+        } else {
+            sb.append(address);
+        }
         sb.append(", filter: ");
         for (String ftype : filter) {
             sb.append(ftype);

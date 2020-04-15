@@ -96,7 +96,6 @@ public class EchonetProxy implements Runnable {
         this.context = context;
 
         Thread server_thread = new Thread(this);
-        server_thread.setDaemon(true);
         server_thread.start();
     }
 
