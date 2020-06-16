@@ -70,4 +70,7 @@
     nbproject/build-impl.xml file. 
 
     -->
+    <target name="-post-compile">
+        <copy file="README.md" todir="${dist.dir}"/>
+    </target>
 </project>
