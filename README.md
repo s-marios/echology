@@ -148,10 +148,10 @@ or, alternatively:
 
 ### Building ProtoLite
 TODO
-* clone from github
+* clone from github: `git clone https://github.com/s-marios/ProtoLite.git`
 * build with `ant`
 
 ### Building InfoPoller
-* clone from ???
+* clone from tangit: `git clone http://tangit.jaist.ac.jp/git/echology.git`
 * add the `ProtoLite` dependency
 * build with `ant`

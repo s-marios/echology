@@ -12,8 +12,10 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -56,32 +58,32 @@ public class EchonetProxy implements Runnable {
         this.done = false;
         while (!done) {
             try {
-                int ready_channels = selector.select(POLL_TIMEOUT);
-                if (ready_channels > 0) {
-                    Set<SelectionKey> keys = selector.selectedKeys();
-                    for (SelectionKey key : keys) {
-                        //remove the key from the selected keys set...
-                        keys.remove(key);
-                        //...and process it.
-                        if (key.isAcceptable() && key.channel() instanceof ServerSocketChannel) {
-                            //our server socket has a client wanting to connect
-                            //accept and add to the selector
-                            SocketChannel client = ((ServerSocketChannel) key.channel()).accept();
-                            client.configureBlocking(NO_BLOCKING);
-                            client.register(selector, SelectionKey.OP_READ);
-                            System.out.println("New Proxy Client Connected: " + client.getRemoteAddress().toString());
-                        }
-                        if (key.isReadable()) {
-                            //a client send us stuff to do
-                            //read its stuff and pass it to a que for further processing
-                            int bytes_read = readFromClient(key);
-                            if (bytes_read == -1) {
-                                //our client disconnected. deal with it.
-                                String remote_address = ((SocketChannel) key.channel()).getRemoteAddress().toString();
-                                System.out.println("Proxy Client Disconnected: " + remote_address);
-                                //let's cancel this key and never speak of it again.
-                                key.cancel();
-                            }
+                selector.select(POLL_TIMEOUT);
+                //BUGFIX iterate over the keys with iterator to avoid concurrent modificaiton exception
+                Iterator<SelectionKey> keys = selector.selectedKeys().iterator();
+                while (keys.hasNext()) {
+                    SelectionKey key = keys.next();
+                    //remove the key from the selected keys set...
+                    keys.remove();
+                    //...and process it.
+                    if (key.isAcceptable() && key.channel() instanceof ServerSocketChannel) {
+                        //our server socket has a client wanting to connect
+                        //accept and register with the selector
+                        SocketChannel client = ((ServerSocketChannel) key.channel()).accept();
+                        client.configureBlocking(NO_BLOCKING);
+                        client.register(selector, SelectionKey.OP_READ);
+                        System.out.println("New Proxy Client Connected: " + client.getRemoteAddress().toString());
+                    } else if (key.isReadable()) {
+                        //a client send us stuff to do
+                        //read its stuff and pass it to a que for further processing
+                        int bytes_read = readFromClient(key);
+                        if (bytes_read == -1) {
+                            //our client disconnected. deal with it.
+                            String remote_address = ((SocketChannel) key.channel()).getRemoteAddress().toString();
+                            System.out.println("Proxy Client Disconnected: " + remote_address);
+                            key.channel().close();
+                            //let's cancel this key and never speak of it again.
+                            key.cancel();
                         }
                     }
                 }
