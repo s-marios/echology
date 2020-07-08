@@ -157,10 +157,11 @@ public class ClientCommand implements EchoEventListener {
 
             for (EchonetProperty property : answer.getProperties()) {
                 char_response.append(String.format(":0x%02X", property.getPropertyCode()));
-                char_response.append(",");
-
+                
                 byte[] property_data = property.read();
-                if (property_data != null) {
+                if (property_data != null && property_data.length > 0) {
+                    char_response.append(",");
+
                     //we got some data back
                     //convert to string and put in the buffer
                     char_response.append(Utils.toHexString(property_data));
