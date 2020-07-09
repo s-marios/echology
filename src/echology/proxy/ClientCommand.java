@@ -139,6 +139,8 @@ public class ClientCommand implements EchoEventListener {
         if (answer == null) {
             response = ByteBuffer.allocate(16);
             response.asCharBuffer().append("NG\n");
+            //BUGFIX: avoid writing the whole 512 byte buffer
+	    response.limit(6);
         } else {
             response = ByteBuffer.allocate(512);
             CharBuffer char_response = response.asCharBuffer();
@@ -168,6 +170,8 @@ public class ClientCommand implements EchoEventListener {
                 }
             }
             char_response.append("\n");
+            //BUGFIX: avoid writing the whole 512 byte buffer
+	    response.limit(2 * char_response.position());
         }
 
         try {
