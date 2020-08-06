@@ -139,10 +139,10 @@ public class ClientCommand implements EchoEventListener {
         if (answer == null) {
             response = ByteBuffer.allocate(16);
             response.asCharBuffer().append("NG\n");
-            //BUGFIX: avoid writing the whole 512 byte buffer
+            //BUGFIX: avoid writing the whole byte buffer
 	    response.limit(6);
         } else {
-            response = ByteBuffer.allocate(512);
+            response = ByteBuffer.allocate(2048);
             CharBuffer char_response = response.asCharBuffer();
 
             ServiceCode responseCode = answer.getResponseCode();
