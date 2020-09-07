@@ -21,11 +21,17 @@ public class InfoServer {
     private final List<Socket> clientSockets;
     private Thread diseminator;
     private Thread acceptConnections;
+    private boolean buffering;
 
     public InfoServer(int port) throws IOException {
         messageList = Collections.synchronizedList(new ArrayList<>());
         socket = new ServerSocket(port);
         clientSockets = new ArrayList<>();
+    }
+
+    public InfoServer buffering(boolean doBuffering) {
+        this.buffering = doBuffering;
+        return this;
     }
 
     public InfoServer() throws IOException {
@@ -41,7 +47,14 @@ public class InfoServer {
 
     private void diseminate() {
         if (clientSockets.isEmpty()) {
-            //do nothing, we have no clients
+            //we have no clients, but are we buffering?
+            if (!buffering) {
+                synchronized (messageList) {
+                    //no buffering, empty the messageList
+                    messageList.clear();
+                }    
+            }
+            //no clients, no updates, get out of here
             return;
         }
         synchronized (messageList) {
@@ -65,7 +78,6 @@ public class InfoServer {
                         }
                     } //client iteration
                 } //message iteration
-
             }
         }
     }

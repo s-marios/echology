@@ -19,6 +19,8 @@ class ParseArgs {
     boolean doPolling = true;
     boolean doProxy = true;
     int proxyPort = 3361;
+    boolean notify = true;
+    int notifyPort = 3371;
 
     ParseArgs(String[] args) {
         int arglength = args.length;
@@ -37,6 +39,9 @@ class ParseArgs {
                     case "-pp":
                         proxyPort = Integer.parseInt(args[++i]);
                         break;
+                    case "-ppp":
+                        notifyPort = Integer.parseInt(args[++i]);
+                        break;
                     case "-f":
                         parseFilter(args[++i]);
                         break;
@@ -45,6 +50,9 @@ class ParseArgs {
                         break;
                     case "--no-proxy":
                         doProxy = false;
+                        break;
+                    case "--no-notify":
+                        notify = false;
                         break;
                     default:
                         System.out.println("Unrecognized option: " + args[i]);
@@ -80,7 +88,7 @@ class ParseArgs {
         sb.append(Integer.toString(interval));
         sb.append(", Hostname: ");
         if (address == null) {
-            sb.append( "(empty)");
+            sb.append("(empty)");
         } else {
             sb.append(address);
         }

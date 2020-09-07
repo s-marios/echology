@@ -19,7 +19,7 @@ java -jar dist/InfoPoller.jar
 This will start both the polling and the proxy functionality. Bellow is the usage string printed at the start of the program:
 
 ```
-USAGE: [--no-polling] [--no-proxy] [-t timeinterval] [-i IP] [-p pollingport] [-pp proxyport] [-f filterstring]
+USAGE: [--no-polling] [--no-proxy] [--no-notify] [-t timeinterval] [-i IP] [-p pollingport] [-pp proxyport] [-ppp notifyport] [-f filterstring]
   filterstring is a comma-separated list of data type
   filterstring example: TMP,VOC,C02,HMDT etc.
 ```
@@ -28,7 +28,11 @@ The options available are as follows:
 
 `--no-polling` disable the polling functionality.
 
-`--no-proxy` disable the proxy functionality. The presence of both `--no-polling` and `--no-proxy` terminates the program at startup.
+`--no-proxy` disable the proxy functionality. 
+
+`--no-notify` disable the notification functionality. 
+
+The presence of all `--no-polling`, `--no-proxy` and `--no-notify`  terminates the program at startup.
 
 `-t timeinterval` specify the time interval (in seconds) for the polling functionality.
 
@@ -37,6 +41,8 @@ The options available are as follows:
 `-p pollingport` specify the port used to listen for clients interested in the polled data (default: 2345)
 
 `-pp proxyport` specify the port used to listen for clients that want to execute ECHONET Lite commands (default: 3361)
+
+`-ppp notifyport` specify the port used to listen for clients interested in notificaitons (default: 3371)
 
 `f filterstrnig` specify the type of data that will be *excluded from* the polled data. For example, specifying `-f HMDT` will exclude humidity data. Current known data types are `TMPR, HMDT, VOC, CO2, LUX, LGHT, PRSN`, standing in for temperature, humidity, voc, co2, illumination, light status (on/off) and human presence.
 
@@ -102,7 +108,7 @@ IP_ADDRESS:EOJ:PROPERTY_CODE
 
 The responses have the following structure:
 ```
-[OK|NG],IP_ADDRESS:EOJ:PROPERTY_CODE,DATA_VALUE]
+["OK"|"NG"],IP_ADDRESS:EOJ:PROPERTY_CODE,DATA_VALUE]
 ```
 Responses starting with `OK` signify success, with the data value reporting back the actual value of the property specified. Responses starting with `NG` signify an error. An example resulting in an error follows:
 
@@ -128,13 +134,32 @@ IP_ADDRESS:EOJ:PROPERTY_CODE,DATA_VALUE_TO_SET
 A successful `Set` invocation looks like this:
 ```
 10.0.0.ddd:000303:0xBF,ABCDEF
-OK,10.0.0.ddd:000303:0xBF,0x00
+OK,10.0.0.ddd:000303:0xBF
 ```
 
 A `Set` invocation which resulted in a failure looks like this:
 ```
 10.0.0.eee:001101:0x80,0x30
 NG,10.0.0.eee:001101:0x80,0x30
+```
+### Notificaiton Endpoint
+
+The notification endpont provides notifications to interested clients. To connect with `nc`
+To connect to the notification endpoint on the same machine with `nc`, use:
+```
+nc localhost 3371
+```
+
+The notifications have the following structure:
+```
+"INF",IP_ADDRESS:EOJ:PROPERTY_CODE,DATA_VALUE]
+```
+
+Streaming notifications looks like this:
+```
+INF,10.0.0.aaa:001101:0xE0,0x0A57
+INF,10.0.0.aaa:001101:0xE0,0x0A58
+INF,10.0.0.aaa:001101:0xE0,0x0A58
 ```
 
 Building from Source
