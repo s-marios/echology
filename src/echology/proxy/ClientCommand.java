@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 import java.util.NoSuchElementException;
@@ -135,47 +134,42 @@ public class ClientCommand implements EchoEventListener {
 
     @Override
     public void processAnswer(EchonetAnswer answer) {
-        ByteBuffer response;
+        StringBuilder response = new StringBuilder();
         if (answer == null) {
-            response = ByteBuffer.allocate(16);
-            response.asCharBuffer().append("NG\n");
-            //BUGFIX: avoid writing the whole byte buffer
-	    response.limit(6);
+            response.append("NG\n");
         } else {
-            response = ByteBuffer.allocate(2048);
-            CharBuffer char_response = response.asCharBuffer();
-
             ServiceCode responseCode = answer.getResponseCode();
             if (responseCode == ServiceCode.Get_Res || responseCode == ServiceCode.Set_Res) {
-                char_response.append("OK,");
+                response.append("OK,");
             } else {
-                char_response.append("NG,");
+                response.append("NG,");
             }
 
             //regeneratee target, in case of multicasts and/or multiple targets
-            char_response.append(answer.getResponder().getQueryIp().getHostAddress());
-            char_response.append(":");
-            char_response.append(answer.getResponder().getEOJ().toString());
+            response.append(answer.getResponder().getQueryIp().getHostAddress());
+            response.append(":");
+            response.append(answer.getResponder().getEOJ().toString());
 
             for (EchonetProperty property : answer.getProperties()) {
-                char_response.append(String.format(":0x%02X", property.getPropertyCode()));
-                
+                response.append(String.format(":0x%02X", property.getPropertyCode()));
+
                 byte[] property_data = property.read();
                 if (property_data != null && property_data.length > 0) {
-                    char_response.append(",");
+                    response.append(",");
 
                     //we got some data back
                     //convert to string and put in the buffer
-                    char_response.append(Utils.toHexString(property_data));
+                    response.append(Utils.toHexString(property_data));
                 }
             }
-            char_response.append("\n");
-            //BUGFIX: avoid writing the whole 512 byte buffer
-	    response.limit(2 * char_response.position());
+            response.append("\n");
         }
 
         try {
-            ((SocketChannel) getClient_key().channel()).write(response);
+            //TODO confirm that the .getBytes() is never going to bite us
+            // if the platform default charset is something strange
+            ByteBuffer bbr = ByteBuffer.wrap(response.toString().getBytes());
+            ((SocketChannel) getClient_key().channel()).write(bbr);
         } catch (IOException ex) {
             Logger.getLogger(ClientCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
