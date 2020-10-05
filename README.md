@@ -3,7 +3,8 @@ Introduction
 
 The InfoPoller tool provides the following functionality:
 * *polling* at fixed intervals for environmental properties such as humidity, temperature, illumination, CO2/VOC, etc.,
-* act as a *Proxy* for ECHONET Lite commands.
+* act as a *Proxy* for ECHONET Lite commands,
+* act as an ECHONET Lite *notification endpoint*.
 
 To run the program:
 ```
@@ -172,11 +173,13 @@ or, alternatively:
 * NetBeans (>=8.2)
 
 ### Building ProtoLite
-TODO
 * clone from github: `git clone https://github.com/s-marios/ProtoLite.git`
 * build with `ant`
 
-### Building InfoPoller
-* clone from tangit: `git clone http://tangit.jaist.ac.jp/git/echology.git`
-* add the `ProtoLite` dependency
+### Building echology 
+Currently this requires the use of NetBeans.
+
+* clone from github: `git clone http://github.com/s-marios/echology.git`
+* open the project using NetBeans
+* add the `ProtoLite` dependency (.jar library, see Building Protolite, above)
 * build with `ant`
