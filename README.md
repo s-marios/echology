@@ -2,6 +2,7 @@ Introduction
 ============
 
 The InfoPoller tool provides the following functionality:
+
 * *polling* at fixed intervals for environmental properties such as humidity, temperature, illumination, CO2/VOC, etc.,
 * act as a *Proxy* for ECHONET Lite commands,
 * act as an ECHONET Lite *notification endpoint*.
@@ -20,7 +21,8 @@ java -jar dist/InfoPoller.jar
 This will start both the polling and the proxy functionality. Bellow is the usage string printed at the start of the program:
 
 ```
-USAGE: [--no-polling] [--no-proxy] [--no-notify] [-t timeinterval] [-i IP] [-p pollingport] [-pp proxyport] [-ppp notifyport] [-f filterstring]
+USAGE: [--no-polling] [--no-proxy] [--no-notify] [-t timeinterval] [-i IP] [-p pollingport]
+  [-pp proxyport] [-ppp notifyport] [-f filterstring]
   filterstring is a comma-separated list of data type
   filterstring example: TMP,VOC,C02,HMDT etc.
 ```
@@ -183,3 +185,14 @@ Currently this requires the use of NetBeans.
 * open the project using NetBeans
 * add the `ProtoLite` dependency (.jar library, see Building Protolite, above)
 * build with `ant`
+
+Releases
+----------------
+The project's source code is available at github:
+
+<https://github.com/s-marios/echology>
+
+
+Binary releases are available at:
+
+<https://github.com/s-marios/echology/releases>
