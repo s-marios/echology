@@ -7,10 +7,7 @@ The InfoPoller tool provides the following functionality:
 * act as a *Proxy* for ECHONET Lite commands,
 * act as an ECHONET Lite *notification endpoint*.
 
-To run the program:
-```
-java -jar dist/InfoPoller.jar
-```
+![Accessing ECHONET Lite devices through the proxy, using nc](/assets/echology.gif)
 
 Running the Program
 -------------------
