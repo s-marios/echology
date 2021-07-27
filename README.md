@@ -7,7 +7,7 @@ The InfoPoller tool provides the following functionality:
 * act as a *Proxy* for ECHONET Lite commands,
 * act as an ECHONET Lite *notification endpoint*.
 
-![Accessing ECHONET Lite devices through the proxy, using nc](/assets/echology.gif)
+![Accessing ECHONET Lite devices through the proxy, using nc](assets/echology.gif)
 
 Running the Program
 -------------------
@@ -166,22 +166,16 @@ Building from Source
 --------------------
 ### Software Prerequisites:
 * Java (>= 1.8)
-* Ant
-
-or, alternatively:
-* NetBeans (>=8.2)
+* Maven
+ 
 
 ### Building ProtoLite
-* clone from github: `git clone https://github.com/s-marios/ProtoLite.git`
-* build with `ant`
+* clone from github: `git clone https://github.com/jdarmetzki/ProtoLite.git`
+* build with `mvn install`
 
 ### Building echology 
-Currently this requires the use of NetBeans.
-
-* clone from github: `git clone http://github.com/s-marios/echology.git`
-* open the project using NetBeans
-* add the `ProtoLite` dependency (.jar library, see Building Protolite, above)
-* build with `ant`
+* clone from github: `git clone https://github.com/s-marios/weblite.git`
+* build with `mvn package`
 
 Releases
 ----------------
