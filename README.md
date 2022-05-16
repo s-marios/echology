@@ -1,7 +1,7 @@
 Introduction
 ============
 
-The InfoPoller tool provides the following functionality:
+The echology tool provides the following functionality:
 
 * *polling* at fixed intervals for environmental properties such as humidity, temperature, illumination, CO2/VOC, etc.,
 * act as a *Proxy* for ECHONET Lite commands,
@@ -11,10 +11,15 @@ The InfoPoller tool provides the following functionality:
 
 Running the Program
 -------------------
+First, build from source using Maven, see the bottom of this README for details.
+A ready-to-use redistributable folder can be found at the `target/dist/` folder.
+
 To run the program without any special options use:
 ```
-java -jar dist/InfoPoller.jar
+java -jar target/dist/echology.jar
 ```
+or your favourite IDE.
+
 This will start both the polling and the proxy functionality. Bellow is the usage string printed at the start of the program:
 
 ```
@@ -28,15 +33,15 @@ The options available are as follows:
 
 `--no-polling` disable the polling functionality.
 
-`--no-proxy` disable the proxy functionality. 
+`--no-proxy` disable the proxy functionality.
 
-`--no-notify` disable the notification functionality. 
+`--no-notify` disable the notification functionality.
 
 The presence of all `--no-polling`, `--no-proxy` and `--no-notify`  terminates the program at startup.
 
 `-t timeinterval` specify the time interval (in seconds) for the polling functionality.
 
-`-i IP` specify the IP address (and by extension the network interface) to use. If not specified, automatically select an IP address bound to the machine which is not peer-to-peer and can perform IP multicast. 
+`-i IP` specify the IP address (and by extension the network interface) to use. If not specified, automatically select an IP address bound to the machine which is not peer-to-peer and can perform IP multicast.
 
 `-p pollingport` specify the port used to listen for clients interested in the polled data (default: 2345)
 
@@ -49,9 +54,9 @@ The presence of all `--no-polling`, `--no-proxy` and `--no-notify`  terminates t
 Connecting Clients
 ------------------
 
-To confirm the correct operation of the program, use programs such as `nc` and `telnet` to connect to either the polling or the proxying endpoint. 
+To confirm the correct operation of the program, use programs such as `nc` and `telnet` to connect to either the polling or the proxying endpoint.
 
-### Polling Endpoint 
+### Polling Endpoint
 
 
 For example, to connect to the polling endpoint on the same machine with `nc`, use:
@@ -167,13 +172,12 @@ Building from Source
 ### Software Prerequisites:
 * Java (>= 1.8)
 * Maven
- 
 
 ### Building ProtoLite
 * clone from github: `git clone https://github.com/jdarmetzki/ProtoLite.git`
 * build with `mvn install`
 
-### Building echology 
+### Building echology
 * clone from github: `git clone https://github.com/s-marios/weblite.git`
 * build with `mvn package`
 
