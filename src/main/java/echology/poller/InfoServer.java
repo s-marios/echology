@@ -24,7 +24,7 @@ public class InfoServer {
     private boolean buffering;
 
     public InfoServer(int port) throws IOException {
-        messageList = Collections.synchronizedList(new ArrayList<>());
+        messageList = Collections.synchronizedList(new ArrayList<String>());
         socket = new ServerSocket(port);
         clientSockets = new ArrayList<>();
     }
