@@ -14,7 +14,7 @@ Running the Program
 First, build from source using Maven, see the bottom of this README for details.
 A ready-to-use redistributable folder can be found at the `target/dist/` folder.
 
-To run the program without any special options use:
+To run the program without any special options, at the top-level directory use:
 ```
 java -jar target/dist/echology.jar
 ```
@@ -164,7 +164,7 @@ Streaming notifications looks like this:
 ```
 INF,10.0.0.aaa:001101:0xE0,0x0A57
 INF,10.0.0.aaa:001101:0xE0,0x0A58
-INF,10.0.0.aaa:001101:0xE0,0x0A58
+INF,10.0.0.aaa:001101:0xE0,0x0A59
 ```
 
 Building from Source
@@ -174,11 +174,11 @@ Building from Source
 * Maven
 
 ### Building ProtoLite
-* clone from github: `git clone https://github.com/jdarmetzki/ProtoLite.git`
+* clone from github: `git clone https://github.com/s-marios/ProtoLite.git`
 * build with `mvn install`
 
 ### Building echology
-* clone from github: `git clone https://github.com/s-marios/weblite.git`
+* clone from github: `git clone https://github.com/s-marios/echology.git`
 * build with `mvn package`
 
 Releases
