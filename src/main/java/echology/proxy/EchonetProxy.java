@@ -84,6 +84,8 @@ public class EchonetProxy implements Runnable {
                             key.channel().close();
                             //let's cancel this key and never speak of it again.
                             key.cancel();
+                            //remove the client from our list
+                            client_buffers.remove(key);
                         }
                     }
                 }
