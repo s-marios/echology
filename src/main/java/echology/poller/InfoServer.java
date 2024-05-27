@@ -21,17 +21,11 @@ public class InfoServer {
     private final List<Socket> clientSockets;
     private Thread diseminator;
     private Thread acceptConnections;
-    private boolean buffering;
 
     public InfoServer(int port) throws IOException {
         messageList = Collections.synchronizedList(new ArrayList<String>());
         socket = new ServerSocket(port);
         clientSockets = new ArrayList<>();
-    }
-
-    public InfoServer buffering(boolean doBuffering) {
-        this.buffering = doBuffering;
-        return this;
     }
 
     public InfoServer() throws IOException {
@@ -47,12 +41,9 @@ public class InfoServer {
 
     private void diseminate() {
         if (clientSockets.isEmpty()) {
-            //we have no clients, but are we buffering?
-            if (!buffering) {
-                synchronized (messageList) {
-                    //no buffering, empty the messageList
-                    messageList.clear();
-                }    
+            synchronized (messageList) {
+                //empty the messageList
+                messageList.clear();
             }
             //no clients, no updates, get out of here
             return;
@@ -71,7 +62,6 @@ public class InfoServer {
                         try {
                             client.getOutputStream().write(message.getBytes());
                         } catch (IOException ex) {
-                            //Logger.getLogger(InfoServer.class.getName()).log(Level.SEVERE, null, ex);
                             //io error occured, most likely our client is dead, remove him
                             System.out.println("Client removed (IO exception): " + client.toString());
                             clientIterator.remove();
@@ -93,7 +83,7 @@ public class InfoServer {
                             InfoServer.this.diseminate();
                         } catch (InterruptedException ex) {
                             Logger.getLogger(InfoServer.class
-                                    .getName()).log(Level.SEVERE, null, ex);
+                                .getName()).log(Level.SEVERE, null, ex);
                         }
                     }
                 }
@@ -114,7 +104,7 @@ public class InfoServer {
                         }
                     } catch (IOException ex) {
                         Logger.getLogger(InfoServer.class
-                                .getName()).log(Level.SEVERE, null, ex);
+                            .getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
@@ -136,7 +126,7 @@ public class InfoServer {
             }
         } catch (InterruptedException ex) {
             Logger.getLogger(InfoServer.class
-                    .getName()).log(Level.SEVERE, null, ex);
+                .getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

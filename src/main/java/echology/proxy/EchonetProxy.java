@@ -12,13 +12,11 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -146,7 +144,7 @@ public class EchonetProxy implements Runnable {
         //perform the actual command
         List<EchonetProperty> propertyList = Collections.singletonList(property);
         context.makeQuery(context.getNodeProfileObject().getEchonetObject(),
-                remoteObject, service, propertyList, null, command);
+            remoteObject, service, propertyList, null, command);
     }
 
 }

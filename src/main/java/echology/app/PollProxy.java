@@ -50,7 +50,7 @@ public class PollProxy {
 
         if (pargs.notify) {
             System.out.println("Notification port is: " + pargs.notifyPort);
-            InfoServer server = new InfoServer(pargs.notifyPort).buffering(false);
+            InfoServer server = new InfoServer(pargs.notifyPort);
             server.start();
 
             Notifier notifier = new Notifier(server);
